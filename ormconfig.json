@@ -1,8 +1,14 @@
 {
-  "type": "mysql",
+  "type": "postgres",
   "host": "localhost",
-  "port": 3306,
-  "username": "restore",
+  "port": 5435,
+  "username": "postgres",
   "password": "e1fc3b62",
-  "database": "restore_db"
+  "database": "restore_db",
+  "migrations": [
+    "./src/database/migrations/*.ts"
+  ],
+  "cli": {
+    "migrationsDir": "./src/database/migrations"
+  }
 }
