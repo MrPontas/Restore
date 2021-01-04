@@ -3,15 +3,15 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 class User {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column('varchar(100)')
+  @Column('varchar')
   name: string;
-  @Column('varchar(25)')
+  @Column('varchar')
   login: string;
-  @Column('varchar(20)')
+  @Column('varchar')
   password: string;
   @Column('boolean')
   administrator: boolean;
-  @Column('varchar(255)')
+  @Column('varchar')
   email?: string;
 }
 export default User;

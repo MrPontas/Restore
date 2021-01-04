@@ -35,11 +35,13 @@ class CreateUserService {
         throw new AppError('Email address already exists.');
       }
     }
-    const user = await userRepository.create({
+
+    const hashedPassword = await hash(password, 8);
+    const user = userRepository.create({
       name,
       login,
       email,
-      password,
+      password: hashedPassword,
       administrator,
     });
 

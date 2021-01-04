@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
+import 'reflect-metadata';
 import 'express-async-errors';
 import routes from './routes';
 import './database';

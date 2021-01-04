@@ -1,0 +1,37 @@
+yarn init -y => inicia um projeto backend (cria arquivo package.json)
+yarn add typescript -D => instala dependencia do typescript
+yarn add express => adiciona o framework express (nodeJS)
+yarn tsc --init => cria arquivo config do ts
+yarn tsc => atualiza as config do tsconfig.json
+yarn add @types/express -D => caso tenha algum erro do typescript (basicamente rode, precisa dessa dependencia)
+
+observação:
+cria uma pasta pra jogar os js convertido q antes eram ts. ai roda o yarn tsc. Entretanto, cada vez ele cria a pasta ao rodar, e demora muito
+
+yarn add ts-node-dev -D => pra agiliza o role, e n cria a pasta dist ou o nome q tenha dado pros js
+
+ts-node-dev faz o papel do nodemon e do tsc 👍️
+
+
+ts-node-dev --transpile-only => ignora verificação de erro ao executar, fica mais rapido
+--ignore-watch node_modules => pra n compilar o node_modules, ou ficar observando
+
+
+yarn add typeorm pg => instala o type orm para postgres (BD)
+
+migrations:
+yarn typeorm migration:create -n NameMigration => cria a migration com uma porrada de numero e esse nome;
+yarn typeorm migration:run => roda a migration pra add no banco
+yarn typeorm migration:revert => reverte a migration (NÃO FAZER QUANDO JA ESTIVER DADO GIT PUSH, via de regra)
+yarn typeorm migration:show => mostra as migration ja executada
+
+yarn add reflect-metadata => precisa pro typeorm, importa no começo da aplicação => server
+
+yarn add bcryptjs => para crptografia de senha
+yarn add -D @types/bcryptjs => msm coisa, precisa add
+
+yarn add -D multer => pacote para upload de arquivos no express
+
+
+FRONT-END
+create-react-app nome-do-projeto --template=typescript
