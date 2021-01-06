@@ -40,9 +40,9 @@ class CreateUserService {
     const user = userRepository.create({
       name,
       login,
-      email,
       password: hashedPassword,
       administrator,
+      email,
     });
 
     await userRepository.save(user);

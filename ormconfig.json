@@ -1,10 +1,10 @@
 {
-  "type": "postgres",
+  "type": "mysql",
   "host": "localhost",
-  "port": 5435,
-  "username": "postgres",
+  "port": 3306,
+  "username": "root",
   "password": "e1fc3b62",
-  "database": "restore_db",
+  "database": "restore",
   "entities": [
     "./src/models/*.ts"
   ],
