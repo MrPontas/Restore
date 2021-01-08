@@ -3,7 +3,6 @@ import { verify } from 'jsonwebtoken';
 
 import authConfig from '../configs/auth';
 import AppError from '../errors/AppError';
-import User from '../models/User';
 
 interface TokenPayload {
   iat: number;
@@ -24,20 +23,17 @@ export default function ensureAuthenticated(
   }
 
   // Bearer japsieojr323093298rujew
-
   const [, token] = authHeader.split(' ');
-
   try {
-    const decoded = verify(token, authConfig.jwt.secret);
-
-    const { sub } = decoded as TokenPayload;
-
-    // pra minha aplicação talvez não venha a ser necessário essa parte.
-    // Ela serve pra deixar o id do usuario autenticado disponivel no request
-    // pra ser acessado em demais locais.
-    request.user = {
-      id: sub,
-    };
+    verify(token, authConfig.jwt.secret, (err, decoded) => {
+      if (err) {
+        throw new AppError('Invalid JWT token!', 401);
+      }
+      const { sub } = decoded as TokenPayload;
+      request.user = {
+        id: sub,
+      };
+    });
 
     return next();
   } catch {

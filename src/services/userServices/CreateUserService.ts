@@ -1,8 +1,8 @@
 import { getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 
-import User from '../models/User';
-import AppError from '../errors/AppError';
+import User from '../../models/User';
+import AppError from '../../errors/AppError';
 
 interface Request {
   name: string;
@@ -37,16 +37,19 @@ class CreateUserService {
     }
 
     const hashedPassword = await hash(password, 8);
-    const user = userRepository.create({
-      name,
-      login,
-      password: hashedPassword,
-      administrator,
-      email,
-    });
-
-    await userRepository.save(user);
-    return user;
+    try {
+      const user = userRepository.create({
+        name,
+        login,
+        password: hashedPassword,
+        administrator,
+        email,
+      });
+      await userRepository.save(user);
+      return user;
+    } catch (sqlErr) {
+      throw new AppError(sqlErr.sqlMessage);
+    }
   }
 }
 export default CreateUserService;

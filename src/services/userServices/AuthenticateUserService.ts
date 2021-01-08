@@ -1,10 +1,10 @@
 import { compare } from 'bcryptjs';
 import { getRepository } from 'typeorm';
-import AppError from '../errors/AppError';
-import { sign, verify } from 'jsonwebtoken';
-import authConfig from '../configs/auth';
+import AppError from '../../errors/AppError';
+import { sign } from 'jsonwebtoken';
+import authConfig from '../../configs/auth';
 
-import User from '../models/User';
+import User from '../../models/User';
 
 interface Request {
   login: string;
@@ -28,19 +28,15 @@ class AuthenticateUserService {
     const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
-      throw new AppError('Incorrect user/password combination.', 401);
+      throw new AppError('Incorrect user/password .', 401);
     }
 
     const { secret, expiresIn } = authConfig.jwt;
 
-    const token = sign(
-      {
-        expiresIn: expiresIn,
-        data: 'foobar',
-      },
-      secret,
-    );
-    console.log(token);
+    const token = sign({}, secret, {
+      subject: user.id,
+      expiresIn,
+    });
     return {
       user,
       token,
