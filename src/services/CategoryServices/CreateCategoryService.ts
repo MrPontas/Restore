@@ -1,5 +1,6 @@
 import { getRepository } from 'typeorm';
 import AppError from '../../errors/AppError';
+import Category from '../../models/Category';
 
 interface Request {
   name: string;
@@ -8,20 +9,28 @@ interface Request {
 }
 
 class CreateCategoryService {
-  public async execute({ name, description, user }: Request) {
-    const categoryRepository = getRepository('categories');
+  public async execute({
+    name,
+    description,
+    user,
+  }: Request): Promise<Category | undefined> {
+    if (!name) {
+      throw new AppError('Please inform the category name!');
+    }
+
+    const categoryRepository = getRepository(Category);
     const checkIfCategoryExists = await categoryRepository.findOne({
       where: { name },
     });
     if (checkIfCategoryExists) {
       throw new AppError('The category already exists!');
     }
-    const category = await categoryRepository.create({
+    const category = categoryRepository.create({
       name,
       description,
       user,
     });
-
+    categoryRepository.save(category);
     return category;
   }
 }
