@@ -13,7 +13,7 @@ class DeleteUserService {
     if (!user) {
       throw new AppError('User not found', 404);
     }
-    if (user.id == request.user.id) {
+    if (user.id == request.userId) {
       throw new AppError('You cant delete your own user.');
     }
 

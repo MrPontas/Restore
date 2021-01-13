@@ -4,8 +4,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import User from '../models/User';
+import productsRouter from '../routes/products.routes';
+import Product from './Product';
 
 @Entity('providers')
 class Provider {
@@ -15,11 +18,11 @@ class Provider {
   name: string;
   @Column('boolean')
   active: boolean;
-  @Column('varchar')
-  user: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user' })
-  userObject: User;
+  @ManyToOne(() => User, user => user.providers, { eager: true })
+  user: User;
+
+  @OneToMany(type => Product, provider => Provider)
+  products: Product[];
 }
 export default Provider;

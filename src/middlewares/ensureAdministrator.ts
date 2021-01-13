@@ -8,7 +8,7 @@ export default async function ensureAdministrator(
   response: Response,
   next: NextFunction,
 ): Promise<void> {
-  const user = request.user.id;
+  const user = request.userId;
   const userRepository = getRepository(User);
   const userAuthenticated = await userRepository.findOne({
     where: { id: user },

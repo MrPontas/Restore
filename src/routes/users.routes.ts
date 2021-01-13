@@ -24,6 +24,7 @@ usersRouter.post('/', async (request, response) => {
     password,
     administrator,
   });
+
   return response.json(user);
 });
 

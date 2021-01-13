@@ -3,7 +3,6 @@ import { hash } from 'bcryptjs';
 
 import User from '../../models/User';
 import AppError from '../../errors/AppError';
-import { response } from 'express';
 
 interface Request {
   id: string;

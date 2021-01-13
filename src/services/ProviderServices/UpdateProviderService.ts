@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import AppError from '../../errors/AppError';
 import Provider from '../../models/Provider';
+import { userAuthenticated } from '../../utils/userAuthenticated';
 
 interface Request {
   id: string;
@@ -23,12 +24,12 @@ class UpdateProviderService {
     }
     if (!name) name = provider.name;
     if (active === undefined) active = provider.active;
-
+    const userAuth = await userAuthenticated(user);
     try {
       await providerRepo.update(id, {
         name,
         active,
-        user,
+        user: userAuth,
       });
 
       const providerUpdated = await providerRepo.findOne(id);

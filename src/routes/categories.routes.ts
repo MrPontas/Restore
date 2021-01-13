@@ -5,6 +5,7 @@ import AppError from '../errors/AppError';
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 import Category from '../models/Category';
+import User from '../models/User';
 
 import CreateCategoryService from '../services/CategoryServices/CreateCategoryService';
 import DeleteCategoryService from '../services/CategoryServices/DeleteCategoryService';
@@ -14,15 +15,14 @@ const categoriesRouter = Router();
 categoriesRouter.use(ensureAuthenticated);
 categoriesRouter.post('/', async (request, response) => {
   const { name, description } = request.body;
-  const userAuthId = request.user.id;
 
   if (!name && !description) throw new AppError('Please verify your request');
-
+  const user = request.userId;
   const createCategoryService = new CreateCategoryService();
   const category = await createCategoryService.execute({
     name,
     description,
-    user: userAuthId,
+    user,
   });
   return response.json(category);
 });
@@ -38,7 +38,7 @@ categoriesRouter.patch('/:id', async (request, response) => {
 
   if (!name && !description) throw new AppError('Please verify your request');
 
-  const user = request.user.id;
+  const user = request.userId;
   const categoryService = new UpdateCategoryService();
   const categoryUpdated = await categoryService.execute({
     id,

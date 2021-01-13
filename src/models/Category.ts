@@ -3,9 +3,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
+import Product from './Product';
 import User from './User';
 
 @Entity('categories')
@@ -16,11 +17,11 @@ class Category {
   name: string;
   @Column('varchar')
   description?: string;
-  @Column('varchar')
-  user: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user' })
-  userObject: User;
+  @ManyToOne(type => User, categories => Category, { eager: true })
+  user: User;
+
+  @OneToMany(type => Product, category => Category)
+  products: Product[];
 }
 export default Category;

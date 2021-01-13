@@ -2,6 +2,7 @@ import Category from '../../models/Category';
 import { getRepository } from 'typeorm';
 
 import AppError from '../../errors/AppError';
+import { userAuthenticated } from '../../utils/userAuthenticated';
 
 interface Request {
   id: string;
@@ -26,8 +27,13 @@ class UpdateCategoryService {
     if (!name) name = category.name;
     if (!description) description = category.description;
 
+    const userAuth = await userAuthenticated(user);
     try {
-      await categoryRepository.update(id, { name, description, user });
+      await categoryRepository.update(id, {
+        name,
+        description,
+        user: userAuth,
+      });
       const categoryUpdated = await categoryRepository.findOne(id);
 
       return categoryUpdated;

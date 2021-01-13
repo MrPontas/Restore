@@ -12,7 +12,7 @@ providersRoutes.use(ensureAuthenticated);
 
 providersRoutes.post('/', async (request, response) => {
   const { name, active } = request.body;
-  const userAuthId = request.user.id;
+  const userAuthId = request.userId;
 
   const createProviderService = new CreateProviderService();
   const provider = await createProviderService.execute({
@@ -35,7 +35,7 @@ providersRoutes.get('/', async (request, response) => {
 providersRoutes.patch('/:id', async (request, response) => {
   const { name, active } = request.body;
   const { id } = request.params;
-  const user = request.user.id;
+  const user = request.userId;
   const providerService = new UpdateProviderService();
   const providerUpdated = await providerService.execute({
     id,

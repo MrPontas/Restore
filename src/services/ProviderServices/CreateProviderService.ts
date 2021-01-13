@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import AppError from '../../errors/AppError';
 import Provider from '../../models/Provider';
+import { userAuthenticated } from '../../utils/userAuthenticated';
 
 interface Request {
   name: string;
@@ -15,6 +16,7 @@ class CreateProviderService {
       where: { name },
     });
 
+    const userAuth = await userAuthenticated(user);
     if (checkIfProviderExists) {
       throw new AppError('The provider is already registered.');
     }
@@ -22,7 +24,7 @@ class CreateProviderService {
     const provider = providerRepo.create({
       name: name,
       active: active,
-      user: user,
+      user: userAuth,
     });
     await providerRepo.save(provider);
 

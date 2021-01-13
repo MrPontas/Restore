@@ -13,9 +13,11 @@ export default function checkEmpty(
     }
   }
 
-  if (request.method == 'DELETE') {
-    if (Object.keys(request.params).length === 0) {
-      throw new AppError("Can't comunicate without identifier.");
-    }
-  }
+  // if (request.method == 'DELETE') {
+  //   console.log(request.params);
+  //   if (Object.keys(request.params).length === 0) {
+  //     throw new AppError("Can't comunicate without identifier.");
+  //   }
+  // }
+  return next();
 }

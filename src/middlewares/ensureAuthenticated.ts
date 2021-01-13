@@ -30,13 +30,12 @@ export default function ensureAuthenticated(
         throw new AppError('Invalid JWT token!', 401);
       }
       const { sub } = decoded as TokenPayload;
-      request.user = {
-        id: sub,
-      };
+      request.userId = sub;
     });
 
     return next();
-  } catch {
-    throw new AppError('Invalid JWT token', 401);
+  } catch (err) {
+    // throw new AppError('Invalid JWT token', 401);
+    throw new AppError(err);
   }
 }
