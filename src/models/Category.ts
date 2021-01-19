@@ -21,7 +21,7 @@ class Category {
   @ManyToOne(type => User, categories => Category, { eager: true })
   user: User;
 
-  @OneToMany(type => Product, category => Category)
+  @OneToMany(type => Product, category => category.id)
   products: Product[];
 }
 export default Category;

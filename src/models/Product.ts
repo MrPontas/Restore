@@ -4,11 +4,14 @@ import {
   ManyToOne,
   JoinColumn,
   Entity,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import productsRouter from '../routes/products.routes';
 import Category from './Category';
 import Mold from './Mold';
 import Provider from './Provider';
+import Register from './Register';
 import User from './User';
 
 export enum Genre {
@@ -49,7 +52,7 @@ export enum Status {
   OUTPUT = 'O',
 }
 
-enum Purchase_type {
+export enum Purchase_type {
   CONSIGNED = 'C',
   OWNER = 'O',
 }
@@ -69,8 +72,6 @@ class Product {
   status: Status;
   @Column('datetime')
   created_at: Date;
-  @Column('varchar')
-  id_photo?: string;
   @Column('varchar')
   obs?: string;
   @Column('float')
@@ -93,5 +94,19 @@ class Product {
 
   @ManyToOne(() => Mold, (mold: Mold) => mold.products, { eager: true })
   mold: Mold;
+
+  @ManyToMany(() => Register, { eager: true })
+  @JoinTable({
+    name: 'registers_products',
+    joinColumn: {
+      name: 'productId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'registerId',
+      referencedColumnName: 'id',
+    },
+  })
+  registers: Register[];
 }
 export default Product;

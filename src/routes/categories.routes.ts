@@ -3,8 +3,10 @@ import { getCustomRepository, getRepository } from 'typeorm';
 import AppError from '../errors/AppError';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+import ensureNotEmpty from '../middlewares/ensureNotEmpty';
 
 import Category from '../models/Category';
+import Product from '../models/Product';
 import User from '../models/User';
 
 import CreateCategoryService from '../services/CategoryServices/CreateCategoryService';
@@ -13,6 +15,7 @@ import UpdateCategoryService from '../services/CategoryServices/UpdateCategorySe
 
 const categoriesRouter = Router();
 categoriesRouter.use(ensureAuthenticated);
+categoriesRouter.use(ensureNotEmpty);
 categoriesRouter.post('/', async (request, response) => {
   const { name, description } = request.body;
 
@@ -31,12 +34,19 @@ categoriesRouter.get('/', async (request, response) => {
   const categories = await categoryRepository.find();
   return response.json(categories);
 });
+categoriesRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
+  const productRepository = getRepository(Product);
+  const categoryProducts = await productRepository.find({
+    where: { category: id },
+  });
+
+  return response.json(categoryProducts);
+});
 
 categoriesRouter.patch('/:id', async (request, response) => {
   const { name, description } = request.body;
   const { id } = request.params;
-
-  if (!name && !description) throw new AppError('Please verify your request');
 
   const user = request.userId;
   const categoryService = new UpdateCategoryService();

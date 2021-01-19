@@ -6,6 +6,7 @@ import productsRouter from './products.routes';
 import categoriesRouter from './categories.routes';
 import providersRouter from './providers.routes';
 import moldsRouter from './molds.routes';
+import registersRouter from './registers.routes';
 
 const routes = Router();
 
@@ -16,5 +17,6 @@ routes.use('/products', productsRouter);
 routes.use('/categories', categoriesRouter);
 routes.use('/providers', providersRouter);
 routes.use('/models', moldsRouter);
+routes.use('/registers', registersRouter);
 
 export default routes;

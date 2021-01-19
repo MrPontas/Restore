@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import Category from './Category';
 import Product from './Product';
 import Provider from './Provider';
+import Register from './Register';
 @Entity('users')
 class User {
   @PrimaryGeneratedColumn('uuid')
@@ -18,12 +19,15 @@ class User {
   email?: string;
 
   @OneToMany(type => Provider, user => User)
-  providers: Provider[];
+  providers?: Provider[];
 
   @OneToMany(type => Category, user => User)
-  categories: Category[];
+  categories?: Category[];
 
   @OneToMany(type => Product, user => User)
-  products: Product[];
+  products?: Product[];
+
+  @OneToMany(type => Register, user => User)
+  registers?: Register[];
 }
 export default User;

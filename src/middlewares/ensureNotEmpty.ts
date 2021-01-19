@@ -6,7 +6,11 @@ export default function checkEmpty(
   response: Response,
   next: NextFunction,
 ): void {
-  if (request.method == 'POST' || request.method == 'PATCH') {
+  if (
+    request.method == 'POST' ||
+    request.method == 'PATCH' ||
+    request.method == 'PUT'
+  ) {
     if (Object.keys(request.body).length === 0) {
       console.log(request.body);
       throw new AppError('You need to send some information.');

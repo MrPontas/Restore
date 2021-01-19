@@ -30,7 +30,14 @@ usersRouter.post('/', async (request, response) => {
 
 usersRouter.get('/', async (request, response) => {
   const usersRepository = getRepository(User);
-  const users = await usersRepository.find();
+  const userRepository = getRepository(User);
+  const users = await userRepository
+    .createQueryBuilder('users')
+    .select(`users`)
+    .addSelect('users.password')
+    .addSelect('users.login')
+    .addSelect('users.email')
+    .getMany();
   return response.json(users);
 });
 
