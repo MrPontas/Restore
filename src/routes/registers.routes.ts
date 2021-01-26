@@ -1,8 +1,10 @@
 import Router from 'express';
 import { getRepository } from 'typeorm';
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+import Product from '../models/Product';
 import Register from '../models/Register';
 import CreateRegisterService from '../services/RegisterServices/CreateRegisterService';
+import DeleteRegisterService from '../services/RegisterServices/DeleteRegisterService';
 import { userAuthenticated } from '../utils/userAuthenticated';
 
 const registersRouter = Router();
@@ -14,7 +16,6 @@ registersRouter.use(ensureAuthenticated);
 registersRouter.post('/', async (request, response) => {
   const { products, type, reason } = request.body;
   const user = request.userId;
-  const registersRepository = getRepository('registers');
   const registerService = new CreateRegisterService();
   const register = await registerService.execute({
     products,
@@ -26,11 +27,26 @@ registersRouter.post('/', async (request, response) => {
 });
 
 registersRouter.get('/', async (request, response) => {
+  const { type } = request.query;
   const registerRepository = getRepository(Register);
-  const registers = await registerRepository.find();
+  let registers;
+  if (!type) {
+    registers = await registerRepository.find();
+  } else {
+    await registerRepository.find({
+      where: { type },
+    });
+  }
+  // const registers = await registerRepository
+  //   .createQueryBuilder('registers')
+  //   .select('registers')
+  //   .leftJoinAndSelect('registers.products', 'product')
+  //   .getMany();
   return response.json(registers);
 });
 
-registersRouter.put('/', async (request, response) => {});
-
-registersRouter.delete('/', async (request, response) => {});
+registersRouter.delete('/:id', async (request, response) => {
+  const { id } = request.params;
+  const deleteRegisterService = new DeleteRegisterService();
+  deleteRegisterService.execute(id);
+});

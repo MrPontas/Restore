@@ -30,7 +30,10 @@ class Register {
   @ManyToOne(() => User, user => user.registers)
   user: User;
 
-  @ManyToMany(() => Product, { eager: true })
+  @ManyToMany(() => Product, products => products.registers, {
+    eager: true,
+    cascade: true,
+  })
   @JoinTable({
     name: 'registers_products',
     joinColumn: {

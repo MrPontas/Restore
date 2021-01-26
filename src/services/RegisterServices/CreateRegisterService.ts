@@ -1,9 +1,11 @@
-import { getRepository } from 'typeorm';
+import { getConnection, getRepository } from 'typeorm';
 import AppError from '../../errors/AppError';
 import Product, { Status } from '../../models/Product';
 import Register, { Type } from '../../models/Register';
 import { userAuthenticated } from '../../utils/userAuthenticated';
 import CreateProductService from '../../services/ProductServices/CreateProductService';
+import UpdateProductService from '../ProductServices/UpdateProductService';
+import DeleteRegisterService from './DeleteRegisterService';
 
 interface Request {
   type: Type;
@@ -18,7 +20,7 @@ class CreateRegisterService {
     products,
     reason,
     user,
-  }: Request): Promise<Register> {
+  }: Request): Promise<Register | undefined> {
     const registersRepository = getRepository(Register);
     const productRepository = getRepository(Product);
     const userAuth = await userAuthenticated(user);
@@ -26,59 +28,85 @@ class CreateRegisterService {
     if (!Object.values(Type).includes(type)) {
       throw new AppError("Invalid value for 'Type'");
     }
-
+    const register = registersRepository.create({
+      type,
+      reason,
+      user: userAuth,
+    });
+    await registersRepository.save(register);
     //registro de entrada
-    const createProductService = new CreateProductService();
-    let i = 0;
     if (type == Type.INPUT) {
       if (reason) {
         throw new AppError(
           'The reason of register must be defined only on an output register.',
         );
       }
-      for (let product of products) {
-        if (!product) {
-          products.splice(i, 1);
-        }
-        const productObject = await productRepository.findOne({
-          where: [{ id: product.id }, { name: product.name }],
-        });
-        if (productObject) {
-          // const productObject = await createProductService.execute(product, user);
-          throw new AppError(
-            `The product '${product.name}' is already registered.`,
-          );
-        }
-        product = await createProductService.execute(product, user);
-        i++;
-      }
+
+      await Promise.all(
+        products.map(async product => {
+          try {
+            if (!product) {
+              throw new AppError(`Something went wrong on 'products'`);
+            }
+            const productObject = await productRepository.findOne({
+              where: [{ name: product.name }],
+            });
+            if (productObject) {
+              throw new AppError(
+                `The product '${product.name}' is already registered.`,
+              );
+            }
+
+            const createProductService = new CreateProductService();
+            product = await createProductService.execute(product, user);
+            await registersRepository
+              .createQueryBuilder()
+              .relation(Register, 'products')
+              .of(register)
+              .add(product);
+          } catch (err) {
+            const deleteRegisterService = new DeleteRegisterService();
+            await deleteRegisterService.execute(register.id);
+            throw new AppError(err.message, err.statusCode);
+          }
+        }),
+      );
     }
-    i = 0;
     //registro de saida
     if (type == Type.OUTPUT) {
-      for (let product of products) {
-        if (!product) {
-          products.splice(i, 1);
-        }
-        if (product.status != Status.IN_STOCK) {
-          throw new AppError(
-            `The product '${product.name}' is not assignable to an output register.`,
-          );
-        }
-        product.status = Status.OUTPUT;
-        i++;
-      }
+      await Promise.all(
+        products.map(async product => {
+          try {
+            const productObject = await productRepository.findOne(product.id);
+            if (!productObject) {
+              throw new AppError(`Something went wrong on 'products'`);
+            }
+            if (productObject.status != Status.IN_STOCK) {
+              throw new AppError('Invalid product status.');
+            }
+            productObject.status = Status.OUTPUT;
+
+            const updateProductService = new UpdateProductService();
+            await updateProductService.execute(
+              productObject.id,
+              productObject,
+              user,
+            );
+
+            await registersRepository
+              .createQueryBuilder()
+              .relation(Register, 'products')
+              .of(register)
+              .add(productObject);
+          } catch (err) {
+            const deleteRegisterService = new DeleteRegisterService();
+            await deleteRegisterService.execute(register.id, true);
+            throw new AppError(err.message, err.statusCode);
+          }
+        }),
+      );
     }
-    if (!products || !products.length) {
-      throw new AppError('It must have at least one product');
-    }
-    const registerCreated = registersRepository.create({
-      type,
-      products,
-      reason,
-      user: userAuth,
-    });
-    registersRepository.save(registerCreated);
+    const registerCreated = await registersRepository.findOne(register.id);
     return registerCreated;
   }
 }

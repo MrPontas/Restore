@@ -5,7 +5,7 @@ module.exports = {
   username: 'root',
   password: 'e1fc3b62',
   database: 'restore',
-  entities: [__dirname + '/src/models/*.ts'],
+  entities: ['./src/models/*.ts'],
   migrations: ['./src/database/migrations/*.ts'],
   cli: {
     migrationsDir: './src/database/migrations',

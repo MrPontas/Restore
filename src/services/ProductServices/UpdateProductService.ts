@@ -12,9 +12,6 @@ class UpdateProductService {
     product: Product,
     user: string,
   ): Promise<Product | undefined> {
-    const categoryRepository = getRepository(Category);
-    const providerRepository = getRepository(Provider);
-    const moldRepository = getRepository(Mold);
     const productRepository = getRepository(Product);
 
     const productOnDB = await productRepository.findOne(id);
@@ -58,23 +55,47 @@ class UpdateProductService {
       throw new AppError("Invalid value for 'Status'");
     }
     try {
-      await productRepository.update(id, {
-        name: product.name,
-        genre: product.genre,
-        color: product.color,
-        size: product.size,
-        status: product.status,
-        obs: product.obs,
-        sale_value: product.sale_value,
-        purchase_value: product.purchase_value,
-        purchase_type: product.purchase_type,
-        brand: product.brand,
-        category: categoryObject,
-        mold: moldObject,
-        provider: providerObject,
-        user: userObject,
-      });
+      // await productRepository.update(id, {
+      //   name: product.name,
+      //   genre: product.genre,
+      //   color: product.color,
+      //   size: product.size,
+      //   status: product.status,
+      //   obs: product.obs,
+      //   sale_value: product.sale_value,
+      //   purchase_value: product.purchase_value,
+      //   purchase_type: product.purchase_type,
+      //   brand: product.brand,
+      //   category: categoryObject,
+      //   mold: moldObject,
+      //   provider: providerObject,
+      //   user: userObject,
+      // });
+      const query = await productRepository
+        .createQueryBuilder(`products`)
+        .update(Product)
+        .set({
+          name: product.name,
+          genre: product.genre,
+          color: product.color,
+          size: product.size,
+          status: product.status,
+          obs: product.obs,
+          sale_value: product.sale_value,
+          purchase_value: product.purchase_value,
+          purchase_type: product.purchase_type,
+          brand: product.brand,
+          category: categoryObject,
+          mold: moldObject,
+          provider: providerObject,
+          user: userObject,
+        })
+        .where('id = :id', { id: id })
+        .execute();
+      // console.log(query);
+      // const productUpdated = await productRepository.save(product);
       const productUpdated = await productRepository.findOne(id);
+      console.log(productUpdated);
       return productUpdated;
     } catch (errSql) {
       throw new AppError(errSql.message);

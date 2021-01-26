@@ -6,6 +6,7 @@ import {
   Entity,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import productsRouter from '../routes/products.routes';
 import Category from './Category';
@@ -95,18 +96,7 @@ class Product {
   @ManyToOne(() => Mold, (mold: Mold) => mold.products, { eager: true })
   mold: Mold;
 
-  @ManyToMany(() => Register, { eager: true })
-  @JoinTable({
-    name: 'registers_products',
-    joinColumn: {
-      name: 'productId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'registerId',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => Register, registers => registers.products)
   registers: Register[];
 }
 export default Product;
