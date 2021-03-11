@@ -18,9 +18,11 @@ import User from './User';
 export enum Genre {
   FEMALE = 'F',
   MALE = 'M',
+  UNISSEX = 'U',
 }
 
 export enum Size {
+  U = 'U',
   PP = 'PP',
   P = 'P',
   M = 'M',

@@ -27,7 +27,7 @@ class Register {
   @Column('varchar')
   reason: string;
 
-  @ManyToOne(() => User, user => user.registers)
+  @ManyToOne(() => User, user => user.registers, { eager: true })
   user: User;
 
   @ManyToMany(() => Product, products => products.registers, {

@@ -10,8 +10,13 @@ interface Request {
   login: string;
   password: string;
 }
+
+interface UserHiddenInformation {
+  password?: string;
+}
+
 interface Response {
-  user: User;
+  user: UserHiddenInformation;
   token: string;
 }
 
@@ -22,6 +27,7 @@ class AuthenticateUserService {
       .createQueryBuilder('users')
       .select(`users`)
       .addSelect('users.password')
+      .addSelect('users.login')
       .where(`users.login = '${login}'`)
       .getOne();
 
@@ -32,9 +38,13 @@ class AuthenticateUserService {
     const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
-      // throw new AppError('Incorrect user/password .', 401);
-      throw new AppError('fajeosifjsoi .', 401);
+      throw new AppError('Incorrect user/password combination.', 401);
+      // throw new AppError('fajeosifjsoi .', 401);
     }
+
+    const userHidden = user as UserHiddenInformation;
+
+    delete userHidden.password;
 
     const { secret, expiresIn } = authConfig.jwt;
 
@@ -43,7 +53,7 @@ class AuthenticateUserService {
       expiresIn,
     });
     return {
-      user,
+      user: userHidden,
       token,
     };
   }

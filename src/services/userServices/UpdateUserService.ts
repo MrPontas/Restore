@@ -23,9 +23,13 @@ class UpdateUserService {
   }: Request): Promise<User | undefined> {
     const userRepository = getRepository(User);
 
-    const user = await userRepository.findOne({
-      where: { id },
-    });
+    const user = await userRepository
+      .createQueryBuilder('users')
+      .select(`users`)
+      .addSelect('users.password')
+      .where(`id = :id`, { id: id })
+      .getOne();
+
     if (!user) {
       throw new AppError('User not found', 404);
     }
@@ -35,6 +39,7 @@ class UpdateUserService {
     if (administrator === undefined) {
       administrator = user.administrator;
     }
+    console.log(email);
 
     //After this if the password is cryptographed
     if (!password) {
@@ -56,8 +61,10 @@ class UpdateUserService {
       });
       return userUpdated;
     } catch (sqlErr) {
+      console.log(sqlErr);
       throw new AppError(sqlErr.sqlMessage);
     }
+    return undefined;
   }
 }
 export default UpdateUserService;

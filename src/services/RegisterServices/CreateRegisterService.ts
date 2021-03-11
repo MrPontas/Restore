@@ -66,7 +66,7 @@ class CreateRegisterService {
               .add(product);
           } catch (err) {
             const deleteRegisterService = new DeleteRegisterService();
-            await deleteRegisterService.execute(register.id);
+            await deleteRegisterService.execute(register.id, user);
             throw new AppError(err.message, err.statusCode);
           }
         }),
@@ -81,6 +81,7 @@ class CreateRegisterService {
             if (!productObject) {
               throw new AppError(`Something went wrong on 'products'`);
             }
+            console.log(productObject.registers);
             if (productObject.status != Status.IN_STOCK) {
               throw new AppError('Invalid product status.');
             }
@@ -100,7 +101,7 @@ class CreateRegisterService {
               .add(productObject);
           } catch (err) {
             const deleteRegisterService = new DeleteRegisterService();
-            await deleteRegisterService.execute(register.id, true);
+            await deleteRegisterService.execute(register.id, user);
             throw new AppError(err.message, err.statusCode);
           }
         }),

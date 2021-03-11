@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getRepository, UpdateDateColumn } from 'typeorm';
+import { getRepository, Raw, UpdateDateColumn } from 'typeorm';
 import AppError from '../errors/AppError';
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 import ensureNotEmpty from '../middlewares/ensureNotEmpty';
@@ -25,10 +25,34 @@ productsRouter.post('/', async (request, response) => {
   return response.json(productCreated);
 });
 productsRouter.get('/', async (request, response) => {
+  const { name } = request.query;
   const productRepository = getRepository(Product);
+  console.log(name);
+  if (name) {
+    // const products = await getRepository(Product)
+    //   .createQueryBuilder('products')
+    //   .select('product')
+    //   .addSelect('product.category')
+    //   .where('name like :name', { name: `%${name}%` })
+    //   .getMany();
+    const products = await productRepository.find({
+      where: { name: Raw(alias => `${alias} LIKE '%${name}%'`) },
+    });
+    return response.json(products);
+  }
   const products = await productRepository.find();
   return response.json(products);
 });
+
+productsRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
+  const productRepository = getRepository(Product);
+  const product = await productRepository.findOneOrFail({
+    where: { id },
+  });
+  return response.json(product);
+});
+
 productsRouter.put('/:id', async (request, response) => {
   const product: Product = request.body;
   const { id } = request.params;

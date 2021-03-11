@@ -9,13 +9,13 @@ class User {
   id: string;
   @Column('varchar')
   name: string;
-  @Column({ select: false, type: 'varchar' })
+  @Column('varchar')
   login: string;
   @Column({ select: false, type: 'varchar' })
   password: string;
   @Column('boolean')
   administrator: boolean;
-  @Column({ select: false, type: 'varchar' })
+  @Column('varchar')
   email?: string;
 
   @OneToMany(type => Provider, user => User)

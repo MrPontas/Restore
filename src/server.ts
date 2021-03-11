@@ -4,9 +4,12 @@ import 'express-async-errors';
 import routes from './routes';
 import './database';
 import AppError from './errors/AppError';
+import cors from 'cors';
 
 const app = express();
 const port = 3333;
+
+app.use(cors());
 app.use(express.json());
 app.use(routes);
 

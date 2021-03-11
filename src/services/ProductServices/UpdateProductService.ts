@@ -2,7 +2,12 @@ import { getRepository } from 'typeorm';
 import AppError from '../../errors/AppError';
 import Category from '../../models/Category';
 import Mold from '../../models/Mold';
-import Product, { Genre, Size, Status } from '../../models/Product';
+import Product, {
+  Genre,
+  Purchase_type,
+  Size,
+  Status,
+} from '../../models/Product';
 import Provider from '../../models/Provider';
 import { userAuthenticated } from '../../utils/userAuthenticated';
 
@@ -33,11 +38,17 @@ class UpdateProductService {
     if (!product.name) product.name = productOnDB.name;
     if (!product.obs) product.obs = productOnDB.obs;
     if (!product.provider) product.provider = productOnDB.provider;
-    if (!product.purchase_type)
+    if (
+      !(
+        product.purchase_type === Purchase_type.CONSIGNED ||
+        product.purchase_type === Purchase_type.OWNER
+      )
+    )
       product.purchase_type = productOnDB.purchase_type;
-    if (!product.purchase_value)
+    if (product.purchase_value === undefined)
       product.purchase_value = productOnDB.purchase_value;
-    if (!product.sale_value) product.sale_value = productOnDB.sale_value;
+    if (product.sale_value === undefined)
+      product.sale_value = productOnDB.sale_value;
     if (!product.size) product.size = productOnDB.size;
     if (!product.status) product.status = productOnDB.status;
     if (!moldObject) moldObject = productOnDB.mold;
@@ -71,7 +82,7 @@ class UpdateProductService {
       //   provider: providerObject,
       //   user: userObject,
       // });
-      const query = await productRepository
+      await productRepository
         .createQueryBuilder(`products`)
         .update(Product)
         .set({

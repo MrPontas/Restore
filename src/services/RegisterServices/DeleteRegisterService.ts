@@ -1,19 +1,38 @@
 import { DeleteResult, getRepository } from 'typeorm';
 import AppError from '../../errors/AppError';
+import Product, { Status } from '../../models/Product';
 import Register, { Type } from '../../models/Register';
+import UpdateProductService from '../ProductServices/UpdateProductService';
 
 class DeleteRegisterService {
-  public async execute(
-    id: string,
-    deleteOutput?: boolean,
-  ): Promise<DeleteResult> {
+  public async execute(id: string, user: string): Promise<DeleteResult> {
     const registerRepository = getRepository(Register);
+    const productRepository = getRepository(Product);
     const register = await registerRepository.findOne(id);
+
     if (!register) {
       throw new AppError('Register not found', 404);
     }
-    if (register.type == Type.OUTPUT && !deleteOutput) {
-      throw new AppError(`You can't delete an output register.`);
+    if (register.type == Type.OUTPUT) {
+      const updateProductService = new UpdateProductService();
+      await Promise.all(
+        register.products.map(async product => {
+          product.status = Status.IN_STOCK;
+          await updateProductService.execute(product.id, product, user);
+        }),
+      );
+    }
+    if (register.type == Type.INPUT) {
+      await Promise.all(
+        register.products.map(async product => {
+          await registerRepository
+            .createQueryBuilder()
+            .relation(Register, 'products')
+            .of(register)
+            .remove(product);
+          await productRepository.delete(product.id);
+        }),
+      );
     }
     const registerDeleted = await registerRepository.delete(id);
     return registerDeleted;

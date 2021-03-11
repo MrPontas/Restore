@@ -45,8 +45,20 @@ registersRouter.get('/', async (request, response) => {
   return response.json(registers);
 });
 
+registersRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
+  const registerRepository = getRepository(Register);
+
+  const product = await registerRepository.findOneOrFail({
+    where: { id },
+  });
+  return response.json(product);
+});
+
 registersRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
+  const user = request.userId;
   const deleteRegisterService = new DeleteRegisterService();
-  deleteRegisterService.execute(id);
+  const deletedResult = await deleteRegisterService.execute(id, user);
+  return response.json(deletedResult);
 });
