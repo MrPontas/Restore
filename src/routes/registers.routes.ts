@@ -1,11 +1,17 @@
 import Router from 'express';
-import { getRepository } from 'typeorm';
+import {
+  getRepository,
+  Repository,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+} from 'typeorm';
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 import Product from '../models/Product';
 import Register from '../models/Register';
 import CreateRegisterService from '../services/RegisterServices/CreateRegisterService';
 import DeleteRegisterService from '../services/RegisterServices/DeleteRegisterService';
 import { userAuthenticated } from '../utils/userAuthenticated';
+import { ParsedQs } from 'qs';
 
 const registersRouter = Router();
 
@@ -28,20 +34,44 @@ registersRouter.post('/', async (request, response) => {
 
 registersRouter.get('/', async (request, response) => {
   const { type } = request.query;
+  let { start, end } = request.query;
   const registerRepository = getRepository(Register);
-  let registers;
-  if (!type) {
-    registers = await registerRepository.find();
-  } else {
-    await registerRepository.find({
-      where: { type },
-    });
+  let registers, query;
+  query = registerRepository.createQueryBuilder('register');
+  query.leftJoinAndSelect('register.products', 'product');
+  query.leftJoinAndSelect('register.user', 'user');
+
+  if (type === 'O' || type === 'I') {
+    query.where(`register.type = :type`, { type: type });
   }
-  // const registers = await registerRepository
-  //   .createQueryBuilder('registers')
-  //   .select('registers')
-  //   .leftJoinAndSelect('registers.products', 'product')
-  //   .getMany();
+
+  if (!start) start = '1900-01-01 00:00:00';
+  if (!end) end = '2500-12-12 23:59:59';
+
+  const startTimestamp = start + ' 00:00:00';
+  const endTimestamp = end + ' 23:59:59';
+
+  query.where(
+    `register.created_at BETWEEN '${startTimestamp}' AND '${endTimestamp}'`,
+  );
+
+  // if (start) {
+  //   const startTimestamp = start + ' 00:00:00';
+
+  //   query.where(`register.created_at >= :startDate`, {
+  //     startDate: start,
+  //   });
+  // }
+  // if (end) {
+  //   const endTimestamp = end + ' 23:59:59';
+
+  //   query.where(`register.created_at <= :endDate`, {
+  //     endDate: end,
+  //   });
+  // }
+
+  query.orderBy('register.created_at', 'DESC');
+  registers = await query.getMany();
   return response.json(registers);
 });
 

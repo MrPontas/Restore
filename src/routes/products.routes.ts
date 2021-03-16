@@ -29,12 +29,6 @@ productsRouter.get('/', async (request, response) => {
   const productRepository = getRepository(Product);
   console.log(name);
   if (name) {
-    // const products = await getRepository(Product)
-    //   .createQueryBuilder('products')
-    //   .select('product')
-    //   .addSelect('product.category')
-    //   .where('name like :name', { name: `%${name}%` })
-    //   .getMany();
     const products = await productRepository.find({
       where: { name: Raw(alias => `${alias} LIKE '%${name}%'`) },
     });
