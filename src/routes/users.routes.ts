@@ -60,7 +60,6 @@ usersRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
   const deleteUser = new DeleteUserService();
   const deleteResult = await deleteUser.execute(id, request);
-  console.log(deleteResult);
   return response.json(deleteResult);
 });
 export default usersRouter;

@@ -81,7 +81,6 @@ class CreateRegisterService {
             if (!productObject) {
               throw new AppError(`Something went wrong on 'products'`);
             }
-            console.log(productObject.registers);
             if (productObject.status != Status.IN_STOCK) {
               throw new AppError('Invalid product status.');
             }

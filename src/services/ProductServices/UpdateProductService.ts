@@ -103,10 +103,7 @@ class UpdateProductService {
         })
         .where('id = :id', { id: id })
         .execute();
-      // console.log(query);
-      // const productUpdated = await productRepository.save(product);
       const productUpdated = await productRepository.findOne(id);
-      console.log(productUpdated);
       return productUpdated;
     } catch (errSql) {
       throw new AppError(errSql.message);

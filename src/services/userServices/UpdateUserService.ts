@@ -39,7 +39,6 @@ class UpdateUserService {
     if (administrator === undefined) {
       administrator = user.administrator;
     }
-    console.log(email);
 
     //After this if the password is cryptographed
     if (!password) {

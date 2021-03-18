@@ -25,13 +25,22 @@ productsRouter.post('/', async (request, response) => {
   return response.json(productCreated);
 });
 productsRouter.get('/', async (request, response) => {
-  const { name } = request.query;
+  const { name, status } = request.query;
   const productRepository = getRepository(Product);
-  console.log(name);
   if (name) {
     const products = await productRepository.find({
       where: { name: Raw(alias => `${alias} LIKE '%${name}%'`) },
     });
+    return response.json(products);
+  }
+  if (status) {
+    const query = productRepository.createQueryBuilder('product');
+    query.where(`product.status = '${status}'`);
+    query.leftJoinAndSelect('product.category', 'category');
+    query.leftJoinAndSelect('product.mold', 'mold');
+    query.leftJoinAndSelect('product.provider', 'provider');
+    query.orderBy('product.name', 'ASC');
+    const products = await query.getMany();
     return response.json(products);
   }
   const products = await productRepository.find();

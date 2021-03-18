@@ -38,15 +38,9 @@ registersRouter.get('/', async (request, response) => {
   const registerRepository = getRepository(Register);
   let registers, query;
   query = registerRepository.createQueryBuilder('register');
-  query.leftJoinAndSelect('register.products', 'product');
-  query.leftJoinAndSelect('register.user', 'user');
 
-  if (type === 'O' || type === 'I') {
-    query.where(`register.type = :type`, { type: type });
-  }
-
-  if (!start) start = '1900-01-01 00:00:00';
-  if (!end) end = '2500-12-12 23:59:59';
+  if (!start) start = '1900-01-01';
+  if (!end) end = '2500-12-12';
 
   const startTimestamp = start + ' 00:00:00';
   const endTimestamp = end + ' 23:59:59';
@@ -54,22 +48,11 @@ registersRouter.get('/', async (request, response) => {
   query.where(
     `register.created_at BETWEEN '${startTimestamp}' AND '${endTimestamp}'`,
   );
-
-  // if (start) {
-  //   const startTimestamp = start + ' 00:00:00';
-
-  //   query.where(`register.created_at >= :startDate`, {
-  //     startDate: start,
-  //   });
-  // }
-  // if (end) {
-  //   const endTimestamp = end + ' 23:59:59';
-
-  //   query.where(`register.created_at <= :endDate`, {
-  //     endDate: end,
-  //   });
-  // }
-
+  if (type === 'O' || type === 'I') {
+    query.andWhere(`register.type = '${type}' `);
+  }
+  query.leftJoinAndSelect('register.products', 'product');
+  query.leftJoinAndSelect('register.user', 'user');
   query.orderBy('register.created_at', 'DESC');
   registers = await query.getMany();
   return response.json(registers);
