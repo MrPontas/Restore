@@ -28,21 +28,38 @@ usersRouter.post('/', async (request, response) => {
   return response.json(user);
 });
 
-usersRouter.get('/', async (request, response) => {
-  const usersRepository = getRepository(User);
+usersRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
+  console.log(id);
   const userRepository = getRepository(User);
-  const users = await userRepository
+  const query = userRepository
+    .createQueryBuilder('user')
+    .select('user')
+    .addSelect('user.password')
+    .addSelect('user.login')
+    .addSelect('user.email');
+
+  if (id) query.where(`user.id = '${id}'`);
+  const user = await query.orderBy(`user.name`).getMany();
+  return response.json(user);
+});
+
+usersRouter.get('/', async (request, response) => {
+  const userRepository = getRepository(User);
+  const user = await userRepository
     .createQueryBuilder('users')
     .select(`users`)
     .addSelect('users.password')
     .addSelect('users.login')
     .addSelect('users.email')
+    .orderBy(`users.name`)
     .getMany();
-  return response.json(users);
+  return response.json(user);
 });
 
 usersRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
+  console.log(id);
   const { name, login, password, email, administrator } = request.body;
   const updateUser = new UpdateUserService();
   const user = await updateUser.execute({
