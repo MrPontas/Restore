@@ -30,7 +30,6 @@ usersRouter.post('/', async (request, response) => {
 
 usersRouter.get('/:id', async (request, response) => {
   const { id } = request.params;
-  console.log(id);
   const userRepository = getRepository(User);
   const query = userRepository
     .createQueryBuilder('user')
@@ -46,8 +45,8 @@ usersRouter.get('/:id', async (request, response) => {
 
 usersRouter.get('/', async (request, response) => {
   const userRepository = getRepository(User);
-  const user = await userRepository
-    .createQueryBuilder('users')
+  const query = userRepository.createQueryBuilder('users');
+  const user = await query
     .select(`users`)
     .addSelect('users.password')
     .addSelect('users.login')
@@ -59,7 +58,6 @@ usersRouter.get('/', async (request, response) => {
 
 usersRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
-  console.log(id);
   const { name, login, password, email, administrator } = request.body;
   const updateUser = new UpdateUserService();
   const user = await updateUser.execute({
