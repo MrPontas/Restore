@@ -26,6 +26,7 @@ productsRouter.post('/', async (request, response) => {
 });
 productsRouter.get('/', async (request, response) => {
   const { name, status } = request.query;
+  let { start, end } = request.query;
   const productRepository = getRepository(Product);
   if (name) {
     const products = await productRepository.find({
@@ -34,8 +35,12 @@ productsRouter.get('/', async (request, response) => {
     return response.json(products);
   }
   if (status) {
+    if (!start) start = '1900-01-01';
+    if (!end) end = '2500-12-12';
     const query = productRepository.createQueryBuilder('product');
     query.where(`product.status = '${status}'`);
+    query.andWhere(`product.created_at >= '${start}'`);
+    query.andWhere(`product.created_at <= '${end}'`);
     query.leftJoinAndSelect('product.category', 'category');
     query.leftJoinAndSelect('product.mold', 'mold');
     query.leftJoinAndSelect('product.provider', 'provider');

@@ -14,6 +14,8 @@ class Mold {
   id: string;
   @Column('varchar')
   name: string;
+  @Column('smallint')
+  model_number: number;
 
   @OneToMany(type => Product, mold => Mold)
   products: Product[];

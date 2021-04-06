@@ -13,7 +13,6 @@ class CreateProductService {
     const moldRepository = getRepository(Mold);
     const providerRepository = getRepository(Provider);
     const productRepository = getRepository(Product);
-
     try {
       const checkIfProductExists = await productRepository.findOne({
         where: { name: product.name },

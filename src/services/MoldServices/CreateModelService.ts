@@ -7,7 +7,6 @@ class CreateMoldService {
     if (!name) {
       throw new AppError('Please inform the model!');
     }
-
     const moldRepository = getRepository(Mold);
     const checkIfMoldExists = await moldRepository.findOne({
       where: { name },
@@ -15,6 +14,7 @@ class CreateMoldService {
     if (checkIfMoldExists) {
       throw new AppError('The model already exists!');
     }
+
     const mold = moldRepository.create({ name });
     await moldRepository.save(mold);
     return mold;

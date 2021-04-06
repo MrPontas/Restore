@@ -30,6 +30,7 @@ class CreateCategoryService {
     if (checkIfCategoryExists) {
       throw new AppError('The category already exists!');
     }
+
     const category = categoryRepository.create({
       name,
       description,

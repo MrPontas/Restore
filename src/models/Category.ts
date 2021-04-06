@@ -13,6 +13,8 @@ import User from './User';
 class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column('smallint')
+  category_number: number;
   @Column('varchar')
   name: string;
   @Column('varchar')

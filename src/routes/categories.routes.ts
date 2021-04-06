@@ -31,17 +31,20 @@ categoriesRouter.post('/', async (request, response) => {
 });
 categoriesRouter.get('/', async (request, response) => {
   const categoryRepository = getRepository(Category);
-  const categories = await categoryRepository.find();
+  const categories = await categoryRepository.find({
+    order: {
+      name: 'ASC',
+    },
+  });
   return response.json(categories);
 });
+
 categoriesRouter.get('/:id', async (request, response) => {
   const { id } = request.params;
-  const productRepository = getRepository(Product);
-  const categoryProducts = await productRepository.find({
-    where: { category: id },
-  });
+  const categoryRepository = getRepository(Category);
+  const category = await categoryRepository.findOne(id);
 
-  return response.json(categoryProducts);
+  return response.json(category);
 });
 
 categoriesRouter.patch('/:id', async (request, response) => {
@@ -63,6 +66,8 @@ categoriesRouter.patch('/:id', async (request, response) => {
 categoriesRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
   const deleteCategoryService = new DeleteCategoryService();
+  const categoriesRepository = getRepository(Category);
+
   const deletedCategory = await deleteCategoryService.execute(id);
 
   return response.json(deletedCategory);

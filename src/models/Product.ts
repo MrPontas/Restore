@@ -85,6 +85,8 @@ class Product {
   purchase_type: Purchase_type;
   @Column('varchar')
   brand: string;
+  @Column('int')
+  product_number: number;
 
   @ManyToOne(() => User, user => user.products, { eager: true })
   user: User;

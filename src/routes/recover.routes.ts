@@ -3,8 +3,8 @@ import { getRepository } from 'typeorm';
 import AppError from '../errors/AppError';
 import User from '../models/User';
 import nodemailer from 'nodemailer';
-import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 const recRouter = Router();
+import html from '../services/EmailServices/emailTemplate';
 
 recRouter.get('/', async (request, response) => {
   const { login } = request.query;
@@ -12,7 +12,7 @@ recRouter.get('/', async (request, response) => {
   const query = userRepository.createQueryBuilder('users');
   if (login) {
     const userResponse = await query
-      .select('users.administrator')
+      .select('users')
       .addSelect('users.email')
       .where(`users.login = '${login}'`)
       .getOne();
@@ -24,34 +24,42 @@ recRouter.get('/', async (request, response) => {
   throw new AppError('User not informed.', 400);
 });
 
-export default recRouter;
-
-recRouter.post('/', ensureAuthenticated, async (request, response) => {
+recRouter.post('/:id', async (request, response) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      auth: {
-        user: 'ora.luettgen26@ethereal.email',
-        pass: '84qahBArQXcbxhbrGT',
-      },
-    });
-    // send mail with defined transport object
-    let info = await transporter.sendMail({
-      from: 'Ora Luettgen <ora.luettgen26@ethereal.email>',
-      to: 'guipontarolo@gmail.com', // list of receivers
-      subject: 'Hello ✔', // Subject line
-      text: 'Hello world?', // plain text body
-      html: '<b>Hello world?</b>', // html body
-    });
-    console.log('Message sent: %s', info.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    const { id } = request.params;
 
-    // Preview only available when sending through an Ethereal account
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-    return response.json({ ok: true });
+    const userRepository = getRepository(User);
+    const query = userRepository.createQueryBuilder('users');
+    if (id) {
+      const userResponse = await query
+        .select('users')
+        .addSelect('users.email')
+        .where(`users.id = '${id}'`)
+        .getOne();
+      if (!userResponse) {
+        throw new AppError('User not found', 404);
+      }
+
+      const transporter = nodemailer.createTransport({
+        host: 'corfu.kidc.com.br',
+        port: 465,
+        auth: {
+          user: 'noreply@brechorestore.com.br',
+          pass: 'E1fc3b6@!',
+        },
+      });
+      let info = await transporter.sendMail({
+        from: 'Re-store<noreply@brechorestore.com.br>',
+        to: userResponse.email, // list of receivers
+        subject: 'Redefinição de senha', // Subject line
+        html, // html body
+      });
+
+      return response.json({ message: 'successs' });
+    }
   } catch (error) {
     throw new AppError(error);
   }
 });
+
+export default recRouter;
