@@ -2,19 +2,24 @@ import express, { Request, Response, NextFunction } from 'express';
 import 'reflect-metadata';
 import 'express-async-errors';
 import routes from './routes';
-import './database';
 import AppError from './errors/AppError';
 import cors from 'cors';
+import './database';
 
 const app = express();
-const port = 3333;
+const port = process.env.PORT || 1158;
 
 app.use(cors());
 app.use(express.json());
 app.use(routes);
 
 app.use(
-  (err: Error, request: Request, response: Response, next: NextFunction) => {
+  async (
+    err: Error,
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) => {
     if (err instanceof AppError) {
       return response.status(err.statusCode).json({
         status: 'error',
@@ -29,6 +34,7 @@ app.use(
   },
 );
 
+// app.listen();
 app.listen(port, () => {
-  console.log(`Server rodando na porta ${port}! 🖥 🖥 🖥 🖥`);
+  console.log(`Server listing on port ${port}`);
 });

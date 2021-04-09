@@ -2,7 +2,6 @@ import { getRepository } from 'typeorm';
 import AppError from '../../errors/AppError';
 import Category from '../../models/Category';
 import Product from '../../models/Product';
-import User from '../../models/User';
 import { userAuthenticated } from '../../utils/userAuthenticated';
 
 interface Request {

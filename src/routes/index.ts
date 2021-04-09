@@ -11,6 +11,9 @@ import recRouter from './recover.routes';
 
 const routes = Router();
 
+routes.get('/', (req, res) => {
+  return res.json({ message: 'Success! ' });
+});
 routes.use(ensureNotEmpty);
 routes.use('/users', usersRouter);
 routes.use('/recover', recRouter);
