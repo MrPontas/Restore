@@ -1,6 +1,6 @@
 module.exports = {
   type: 'mysql',
-  host: 'cdbr-east-03.cleardb.com',
+  host: 'us-cdbr-east-03.cleardb.com',
   port: 3306,
   // username: 'brechore_api',
   // password: 'E1fc3b6@!',
