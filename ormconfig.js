@@ -1,13 +1,13 @@
 module.exports = {
   type: 'mysql',
-  host: 'localhost',
+  host: 'cdbr-east-03.cleardb.com',
   port: 3306,
   // username: 'brechore_api',
   // password: 'E1fc3b6@!',
   // database: 'brechore_db',
-  username: 'root',
-  password: 'e1fc3b62',
-  database: 'restore',
+  username: 'b1943ae9069626',
+  password: 'b047ebf6',
+  database: 'heroku_fd28c35d8956b61',
   // entities: ['./src/models/*.ts'],
   // migrations: ['./src/database/migrations/*.ts'],
   cli: {
