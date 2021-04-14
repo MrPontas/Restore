@@ -12,11 +12,11 @@ module.exports = {
   username: 't4rh61y2mn9b24z2',
   password: 'd5f3pyq6zefgf2wk',
   database: 'p322gwo28a6b4don',
-  entities: ['./src/models/*.ts'],
-  migrations: ['./src/database/migrations/*.ts'],
+  // entities: ['./src/models/*.ts'],
+  // migrations: ['./src/database/migrations/*.ts'],
   cli: {
     migrationsDir: './src/database/migrations',
   },
-  // entities: [__dirname + '/dist/models/*.js'],
-  // migrations: ['./dist/database/migrations/*.js'],
+  entities: [__dirname + '/dist/models/*.js'],
+  migrations: ['./dist/database/migrations/*.js'],
 };
