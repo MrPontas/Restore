@@ -10,9 +10,9 @@ module.exports = {
   // username: 'root',
   // password: 'e1fc3b62',
   // database: 'restore',
-  username: 't4rh61y2mn9b24z2',
-  password: 'd5f3pyq6zefgf2wk',
-  database: 'p322gwo28a6b4don',
+  // username: 't4rh61y2mn9b24z2',
+  // password: 'd5f3pyq6zefgf2wk',
+  // database: 'p322gwo28a6b4don',
   // entities: ['./src/models/*.ts'],
   // migrations: ['./src/database/migrations/*.ts'],
   cli: {
