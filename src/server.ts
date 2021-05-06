@@ -6,8 +6,8 @@ import AppError from './errors/AppError';
 import cors from 'cors';
 import './database';
 
+const PORT = 3333;
 const app = express();
-const port = process.env.PORT || 1158;
 
 app.use(cors());
 app.use(express.json());
@@ -35,6 +35,6 @@ app.use(
 );
 
 // app.listen();
-app.listen(port, () => {
-  console.log(`Server listing on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server listing on port ${PORT}`);
 });
