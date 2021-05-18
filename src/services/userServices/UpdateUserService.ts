@@ -31,7 +31,7 @@ class UpdateUserService {
       .getOne();
 
     if (!user) {
-      throw new AppError('User not found', 404);
+      throw new AppError('User not found - update user service', 404);
     }
     if (!name) name = user.name;
     if (!login) login = user.login;

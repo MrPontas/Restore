@@ -5,8 +5,13 @@ import routes from './routes';
 import AppError from './errors/AppError';
 import cors from 'cors';
 import './database';
+import http from 'http';
+import https from 'https';
+import fs from 'fs';
 
-const PORT = 3333;
+const HTTPPORT = 1158;
+const HTTPSPORT = 3333;
+
 const app = express();
 
 app.use(cors());
@@ -34,7 +39,30 @@ app.use(
   },
 );
 
-// app.listen();
-app.listen(PORT, () => {
-  console.log(`Server listing on port ${PORT}`);
+// Certificate
+// const privateKey = fs.readFileSync(
+//   '/etc/letsencrypt/live/restorebrecho.com.br/privkey.pem',
+//   'utf8',
+// );
+// const certificate = fs.readFileSync(
+//   '/etc/letsencrypt/live/restorebrecho.com.br/cert.pem',
+//   'utf8',
+// );
+// const ca = fs.readFileSync(
+//   '/etc/letsencrypt/live/restorebrecho.com.br/chain.pem',
+//   'utf8',
+// );
+
+// const credentials = {
+//   key: privateKey,
+//   cert: certificate,
+//   ca: ca,
+// };
+
+// https.createServer(credentials, app).listen(HTTPSPORT, () => {
+//   console.log(`Server listing HTTPS on port ${HTTPSPORT} 🚀 `);
+// });
+
+http.createServer(app).listen(HTTPPORT, () => {
+  console.log(`Server listing HTTP on port ${HTTPPORT} 🚀 `);
 });
