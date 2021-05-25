@@ -65,13 +65,13 @@ class Product {
   id: string;
   @Column('varchar')
   name: string;
-  @Column('enum')
+  @Column({ type: 'enum', enum: Genre })
   genre: Genre;
   @Column('varchar')
   color: string;
-  @Column('enum')
+  @Column({ type: 'enum', enum: Size })
   size: Size;
-  @Column('enum')
+  @Column({ type: 'enum', enum: Status })
   status: Status;
   @Column('datetime')
   created_at: Date;
@@ -81,7 +81,7 @@ class Product {
   sale_value: number;
   @Column('float')
   purchase_value: number;
-  @Column('enum')
+  @Column({ type: 'enum', enum: Purchase_type })
   purchase_type: Purchase_type;
   @Column('varchar')
   brand: string;

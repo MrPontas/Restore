@@ -20,7 +20,7 @@ export enum Type {
 class Register {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column('enum')
+  @Column({ type: 'enum', enum: Type })
   type: Type;
   @Column('datetime')
   created_at: Date;

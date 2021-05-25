@@ -32,12 +32,14 @@ class AuthenticateUserService {
       .getOne();
 
     if (!user) {
+      console.log('User not found 🚩 ');
       throw new AppError('Incorrect user/password combination.');
     }
 
     const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
+      console.log('Incorrect password 🚩 ');
       throw new AppError('Incorrect user/password combination.', 401);
       // throw new AppError('fajeosifjsoi .', 401);
     }

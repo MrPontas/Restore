@@ -24,6 +24,13 @@ productsRouter.post('/', async (request, response) => {
 
   return response.json(productCreated);
 });
+
+interface totalValuesResponse {
+  products: Product[];
+  totalSale: number;
+  totalPurchase: number;
+}
+
 productsRouter.get('/', async (request, response) => {
   const { name, status } = request.query;
   let { start, end } = request.query;
@@ -34,22 +41,29 @@ productsRouter.get('/', async (request, response) => {
     });
     return response.json(products);
   }
-  if (status) {
     if (!start) start = '1900-01-01';
     if (!end) end = '2500-12-12';
     const query = productRepository.createQueryBuilder('product');
-    query.where(`product.status = '${status}'`);
-    query.andWhere(`product.created_at >= '${start}'`);
+    query.where(`product.created_at >= '${start}'`);
     query.andWhere(`product.created_at <= '${end}'`);
+    if (status) query.andWhere(`product.status = '${status}'`);
     query.leftJoinAndSelect('product.category', 'category');
     query.leftJoinAndSelect('product.mold', 'mold');
     query.leftJoinAndSelect('product.provider', 'provider');
     query.orderBy('product.name', 'ASC');
     const products = await query.getMany();
-    return response.json(products);
-  }
-  const products = await productRepository.find();
-  return response.json(products);
+    var totalPurchase = 0, totalSale = 0;
+    products.forEach((product) => {
+      totalPurchase += product.purchase_value;
+      totalSale += product.sale_value;
+    })
+
+    const responseValue: totalValuesResponse = {
+      products,
+      totalPurchase,
+      totalSale
+    }
+    return response.json(responseValue  );
 });
 
 productsRouter.get('/:id', async (request, response) => {
