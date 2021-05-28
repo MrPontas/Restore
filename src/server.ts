@@ -13,7 +13,7 @@ import fs from 'fs';
 const HTTPPORT = 1158;
 // // port build
 // const HTTPPORT = 3000;
-const HTTPSPORT = 3333;
+// const HTTPSPORT = 3333;
 
 const app = express();
 
@@ -42,7 +42,7 @@ app.use(
   },
 );
 
-// Certificate
+// // Certificate
 // const privateKey = fs.readFileSync(
 //   '/etc/letsencrypt/live/restorebrecho.com.br/privkey.pem',
 //   'utf8',

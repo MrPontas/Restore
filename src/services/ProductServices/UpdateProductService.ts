@@ -37,6 +37,7 @@ class UpdateProductService {
     if (!product.mold) product.mold = productOnDB.mold;
     if (!product.name) product.name = productOnDB.name;
     if (!product.obs) product.obs = productOnDB.obs;
+    if (!product.measure) product.measure = productOnDB.measure;
     if (!product.provider) product.provider = productOnDB.provider;
     if (
       !(
@@ -53,6 +54,7 @@ class UpdateProductService {
     if (!product.status) product.status = productOnDB.status;
     if (!moldObject) moldObject = productOnDB.mold;
     if (!providerObject) providerObject = productOnDB.provider;
+
 
     const userObject = await userAuthenticated(user);
 
@@ -92,6 +94,7 @@ class UpdateProductService {
           size: product.size,
           status: product.status,
           obs: product.obs,
+          measure: product.measure,
           sale_value: product.sale_value,
           purchase_value: product.purchase_value,
           purchase_type: product.purchase_type,

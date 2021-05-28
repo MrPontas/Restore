@@ -25,7 +25,11 @@ moldsRouter.post('/', async (request, response) => {
 
 moldsRouter.get('/', async (request, response) => {
   const moldRepository = getRepository(Mold);
-  const molds = await moldRepository.find();
+  const molds = await moldRepository.find({
+    order:{
+      name:'ASC'
+    },
+  });
   return response.json(molds);
 });
 

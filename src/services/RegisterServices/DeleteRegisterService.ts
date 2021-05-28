@@ -23,6 +23,13 @@ class DeleteRegisterService {
       );
     }
     if (register.type == Type.INPUT) {
+
+      for(let i = 0; i < register.products.length; i++){
+        if(register.products[i].status == Status.OUTPUT){
+          throw new AppError('There is at least one product in an output register', 400);
+        }
+      }
+
       await Promise.all(
         register.products.map(async product => {
           await registerRepository

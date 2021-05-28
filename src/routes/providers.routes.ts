@@ -25,7 +25,11 @@ providersRoutes.post('/', async (request, response) => {
 
 providersRoutes.get('/', async (request, response) => {
   const providerRepository = getRepository(Provider);
-  const providers = await providerRepository.find();
+  const providers = await providerRepository.find({
+    order:{
+      name:'ASC',
+    },
+  });
   if (!providers) {
     throw new AppError('There is no providers registered.', 404);
   }

@@ -53,6 +53,7 @@ class CreateProductService {
         size: product.size,
         status: product.status,
         obs: product.obs,
+        measure: product.measure,
         sale_value: product.sale_value,
         purchase_value: product.purchase_value,
         purchase_type: product.purchase_type,

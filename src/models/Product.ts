@@ -77,6 +77,8 @@ class Product {
   created_at: Date;
   @Column('varchar')
   obs?: string;
+  @Column('varchar')
+  measure?: string;
   @Column('float')
   sale_value: number;
   @Column('float')
